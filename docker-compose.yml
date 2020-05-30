@@ -1,0 +1,81 @@
+version: '3.5'
+services:
+#  mysql:
+#    container_name: mysql
+#    image: mysql/mysql-server:5.7
+#    environment:
+#      MYSQL_DATABASE: test
+#      MYSQL_ROOT_PASSWORD: admin
+#      MYSQL_ROOT_HOST: '%'
+#    ports:
+#      - 3306:3306
+#    restart: always
+
+  rabbitmq:
+    container_name: rabbitmq-wefox
+    hostname: api-rabbit
+    image: rabbitmq:3.7.5-management
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - rabbitmq
+
+
+
+  postgres:
+    container_name: postgres-wefox
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-wefox}
+      PGDATA: /data/postgres
+#    volumes:
+#      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+
+#  pgadmin:
+#    container_name: pgadmin-wefox
+#    image: dpage/pgadmin4
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-wefox@wefox.com}
+#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+#    volumes:
+#      - pgadmin:/root/.pgadmin
+#    ports:
+#      - "${PGADMIN_PORT:-5050}:80"
+#    networks:
+#      - postgres
+#    restart: unless-stopped
+
+
+
+  challenge-wefox:
+    build: .
+    volumes:
+    - .:/app
+    - ~/.m2:/root/.m2
+    working_dir: /app
+    ports:
+      - 8080:8080
+      - 5005:5005
+    command: mvn clean spring-boot:run
+    depends_on:
+      - rabbitmq
+#      - mysql
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
+  rabbitmq:
+    driver: bridge
+
+#volumes:
+#  postgres:
+#  pgadmin:
