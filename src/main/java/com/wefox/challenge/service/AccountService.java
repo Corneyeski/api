@@ -3,10 +3,11 @@ package com.wefox.challenge.service;
 import com.wefox.challenge.model.Account;
 import com.wefox.challenge.model.dto.AccountDto;
 import com.wefox.challenge.repository.AccountRepository;
+import com.wefox.challenge.utils.ResourceNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,11 +31,18 @@ public class AccountService {
         return account.getId();
     }
 
-    public void updateAccount(AccountDto accountDto){
-        Account account = accountRepository.findById(accountDto.getId()).orElseThrow(IllegalArgumentException::new);
+    public AccountDto updateAccount(AccountDto accountDto){
+
+        if(accountDto.getId() == null)
+            throw new ResourceNotFoundException();
+
+        Account account = accountRepository.findById(accountDto.getId()).orElseThrow(ResourceNotFoundException::new);
         BeanUtils.copyProperties(accountDto, account);
 
         accountRepository.save(account);
+        BeanUtils.copyProperties(account, accountDto);
+
+        return accountDto;
     }
 
     public List<AccountDto> findAllAccounts(){
@@ -47,18 +55,18 @@ public class AccountService {
 
     public AccountDto findAccountById(Long id){
         AccountDto dto = new AccountDto();
-        BeanUtils.copyProperties(accountRepository.findById(id).orElseThrow(IllegalArgumentException::new), dto);
+        BeanUtils.copyProperties(accountRepository.findById(id).orElseThrow(ResourceNotFoundException::new), dto);
         return dto;
     }
 
     public AccountDto findAccountByEmail(String email){
         AccountDto dto = new AccountDto();
-        BeanUtils.copyProperties(accountRepository.findAccountByEmail(email).orElseThrow(IllegalArgumentException::new), dto);
+        BeanUtils.copyProperties(accountRepository.findAccountByEmail(email).orElseThrow(ResourceNotFoundException::new), dto);
         return dto;
     }
 
     public void deleteAccountById(Long id){
-        Account account = accountRepository.findById(id).orElseThrow(IllegalAccessError::new);
+        Account account = accountRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         accountRepository.delete(account);
     }
 }

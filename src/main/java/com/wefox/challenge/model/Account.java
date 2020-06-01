@@ -2,12 +2,8 @@ package com.wefox.challenge.model;
 
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.validator.constraints.UniqueElements;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "ACCOUNT")
 @Data
@@ -22,6 +18,7 @@ public class Account {
 
     private String name;
 
+    @Column(unique=true)
     private String email;
 
     private int age;

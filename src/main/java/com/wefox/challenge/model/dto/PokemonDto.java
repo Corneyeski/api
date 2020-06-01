@@ -1,23 +1,21 @@
-package com.wefox.challenge.model;
+package com.wefox.challenge.model.dto;
 
-import javax.persistence.*;
+import com.wefox.challenge.model.Pokemon;
 
-@Entity
-public class Pokemon {
+import java.io.Serializable;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PokemonDto implements Serializable {
+
     private Long id;
 
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    private Type type;
+    private Pokemon.Type type;
 
-    public Pokemon() {
+    public PokemonDto() {
     }
 
-    public Pokemon(Long id, String name, Type type) {
+    public PokemonDto(Long id, String name, Pokemon.Type type) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -39,15 +37,11 @@ public class Pokemon {
         this.name = name;
     }
 
-    public Type getType() {
+    public Pokemon.Type getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(Pokemon.Type type) {
         this.type = type;
-    }
-
-    public enum Type {
-        WATER, FIRE, GRASS, ELECTRIC
     }
 }

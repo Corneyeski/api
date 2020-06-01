@@ -1,12 +1,14 @@
 package com.wefox.challenge.model.dto;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 public class AccountDto implements Serializable {
 
     private Long id;
 
+    @NotBlank
     private String name;
 
     @Email
@@ -14,6 +16,7 @@ public class AccountDto implements Serializable {
 
     private int age;
 
+    @NotBlank
     private String address;
 
     public AccountDto() {

@@ -2,9 +2,11 @@ package com.wefox.challenge.controller;
 
 import com.wefox.challenge.model.dto.AccountDto;
 import com.wefox.challenge.service.AccountService;
+import com.wefox.challenge.utils.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,13 +21,13 @@ public class AccountController {
     }
 
     @PostMapping("/create")
-    public Long createAccount(@RequestBody AccountDto account){
+    public Long createAccount(@RequestBody @Valid AccountDto account){
         return accountService.createAccount(account);
     }
 
     @PostMapping("/update")
-    public void updateAccount(@RequestBody AccountDto account){
-        accountService.updateAccount(account);
+    public AccountDto updateAccount(@RequestBody @Valid AccountDto account){
+        return accountService.updateAccount(account);
     }
 
     @GetMapping("/all")
@@ -38,7 +40,7 @@ public class AccountController {
         return accountService.findAccountById(id);
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/search/{email}")
     public AccountDto findAccountByEmail(@PathVariable String email){
         return accountService.findAccountByEmail(email);
     }
